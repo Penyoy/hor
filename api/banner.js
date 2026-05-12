@@ -2,7 +2,7 @@ export default function handler(req, res) {
   const banners = [
     {
       name: "Kitasan Black Banner",
-      image: "banner01.jpg",
+      image: "https://github.com/Penyoy/hor/blob/main/api/14de8482db93dba04f98a7992afd1c96.jpg",
       rate_up: ["Kitasan Black", "Satono Diamond"],
       end_date: "2026-06-01"
     },
