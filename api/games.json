@@ -1,0 +1,29 @@
+{
+  {
+  "id": "minecraft",
+  "title": "Minecraft",
+  "banner": "https://www.freepnglogos.com/images/minecraft-logo-1024.html",
+  "icon": "https://www.freepnglogos.com/images/minecraft-logo-1024.html",
+  "description": "Game sandbox terbaik...",
+  "rating": 4.8,
+  "version": "1.21.1",
+  "size": "285 MB",
+  "developer": "Mojang",
+  "category": "Sandbox",
+  "downloads": "100M+",
+  "updated": "2026-07-01",
+  "screenshots": [
+    "https://example.com/ss1.jpg",
+    "https://example.com/ss2.jpg"
+  ],
+  "download": "https://example.com/download",
+  "features": ["Offline Mode", "Multiplayer"],
+  "changelog": [
+    {
+      "version": "1.21.1",
+      "date": "2026-07-01",
+      "changes": ["Bug fixes", "Performance improvements"]
+    }
+  ]
+}
+}
