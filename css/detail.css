@@ -1,0 +1,433 @@
+/**
+ * GameHub - Detail Page Styles
+ * Game detail, screenshot slider, dan action buttons.
+ */
+
+/* ===== Detail Banner ===== */
+.detail-banner {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.detail-banner__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-banner__gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 13, 13, 0.3) 0%,
+    rgba(13, 13, 13, 0.8) 60%,
+    var(--bg-primary) 100%
+  );
+}
+
+.detail-banner__actions {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  right: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.detail-banner__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(13, 13, 13, 0.5);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.detail-banner__btn:hover {
+  background: rgba(13, 13, 13, 0.8);
+}
+
+.detail-banner__btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Detail Header ===== */
+.detail-header {
+  position: relative;
+  margin-top: -60px;
+  padding: 0 var(--space-md);
+  z-index: 2;
+}
+
+.detail-header__inner {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-end;
+}
+
+.detail-header__icon {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-xl);
+  border: 3px solid var(--bg-primary);
+  box-shadow: var(--shadow-lg);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.detail-header__info {
+  flex: 1;
+  padding-bottom: var(--space-sm);
+  min-width: 0;
+}
+
+.detail-header__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.detail-header__developer {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.detail-header__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.detail-header__stars {
+  display: flex;
+  gap: 2px;
+}
+
+.detail-header__stars svg {
+  width: 18px;
+  height: 18px;
+}
+
+.detail-header__rating-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== Detail Meta ===== */
+.detail-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin: var(--space-lg) var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.detail-meta__item {
+  text-align: center;
+  padding: var(--space-sm);
+}
+
+.detail-meta__item:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+
+.detail-meta__icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary);
+  margin: 0 auto 4px;
+}
+
+.detail-meta__value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.detail-meta__label {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Detail Actions ===== */
+.detail-actions {
+  display: flex;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.detail-actions .btn {
+  flex: 1;
+}
+
+.detail-actions .btn--icon {
+  flex: 0 0 auto;
+}
+
+/* ===== Detail Content ===== */
+.detail-content {
+  padding: 0 var(--space-md);
+}
+
+.detail-section {
+  margin-bottom: var(--space-xl);
+}
+
+.detail-section__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.detail-section__title svg {
+  width: 20px;
+  height: 20px;
+  color: var(--primary);
+}
+
+.detail-description {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.detail-description p {
+  margin-bottom: var(--space-md);
+}
+
+/* ===== Screenshot Slider ===== */
+.screenshot-slider {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin: 0 calc(-1 * var(--space-md));
+  padding: 0 var(--space-md);
+}
+
+.screenshot-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.screenshot-slider__track {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.screenshot-slide {
+  flex-shrink: 0;
+  width: 200px;
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  scroll-snap-align: start;
+  transition: transform var(--transition-base);
+}
+
+.screenshot-slide:hover {
+  transform: scale(1.02);
+}
+
+.screenshot-slide__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.screenshot-slide__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.screenshot-slide:hover .screenshot-slide__overlay {
+  opacity: 1;
+}
+
+.screenshot-slide__overlay svg {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+}
+
+/* ===== Screenshot Modal ===== */
+.screenshot-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.screenshot-modal.active {
+  opacity: 1;
+}
+
+.screenshot-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.screenshot-modal__content {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform var(--transition-base);
+}
+
+.screenshot-modal.active .screenshot-modal__content {
+  transform: scale(1);
+}
+
+.screenshot-modal__image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.screenshot-modal__close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(13, 13, 13, 0.7);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all var(--transition-fast);
+}
+
+.screenshot-modal__close:hover {
+  background: rgba(13, 13, 13, 0.9);
+}
+
+.screenshot-modal__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Feature List ===== */
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.feature-item svg {
+  width: 16px;
+  height: 16px;
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+/* ===== Changelog ===== */
+.changelog {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  border: 1px solid var(--border-color);
+}
+
+.changelog__version {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: var(--space-sm);
+}
+
+.changelog__date {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-md);
+}
+
+.changelog__list {
+  list-style: none;
+}
+
+.changelog__item {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.changelog__item:last-child {
+  border-bottom: none;
+}
+
+.changelog__item svg {
+  width: 16px;
+  height: 16px;
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ===== Related Games ===== */
+.related-games {
+  margin-top: var(--space-xl);
+}
+
+.related-games .games-grid--horizontal {
+  padding-bottom: var(--space-md);
+}

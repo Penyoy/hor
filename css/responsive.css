@@ -1,0 +1,422 @@
+/**
+ * GameHub - Responsive Styles
+ * Media queries untuk berbagai ukuran layar.
+ */
+
+/* ===== 320px ===== */
+@media (min-width: 320px) {
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 140px;
+  }
+
+  .banner-slider {
+    height: 180px;
+    margin: var(--space-sm);
+    width: calc(100% - var(--space-md));
+  }
+
+  .banner-slide__icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .banner-slide__title {
+    font-size: 1rem;
+  }
+
+  .game-card__icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .detail-banner {
+    height: 220px;
+  }
+
+  .detail-header__icon {
+    width: 72px;
+    height: 72px;
+  }
+
+  .detail-header__title {
+    font-size: 1.25rem;
+  }
+
+  .detail-meta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detail-meta__item:nth-child(2n) {
+    border-right: none;
+  }
+
+  .detail-meta__item:last-child {
+    grid-column: span 2;
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .screenshot-slide {
+    width: 160px;
+  }
+}
+
+/* ===== 360px ===== */
+@media (min-width: 360px) {
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 150px;
+  }
+
+  .banner-slider {
+    height: 200px;
+  }
+
+  .detail-meta {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .detail-meta__item:nth-child(2n) {
+    border-right: 1px solid var(--border-color);
+  }
+
+  .detail-meta__item:last-child {
+    grid-column: auto;
+    border-top: none;
+  }
+}
+
+/* ===== 375px ===== */
+@media (min-width: 375px) {
+  .banner-slider {
+    height: 210px;
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 155px;
+  }
+}
+
+/* ===== 390px ===== */
+@media (min-width: 390px) {
+  .games-grid--horizontal .game-card {
+    width: 160px;
+  }
+
+  .screenshot-slide {
+    width: 170px;
+  }
+}
+
+/* ===== 412px ===== */
+@media (min-width: 412px) {
+  .games-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .banner-slider {
+    height: 220px;
+  }
+}
+
+/* ===== 480px ===== */
+@media (min-width: 480px) {
+  .games-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 170px;
+  }
+
+  .banner-slider {
+    height: 240px;
+    border-radius: var(--radius-xl);
+  }
+
+  .game-card--featured {
+    grid-column: span 2;
+  }
+
+  .detail-banner {
+    height: 280px;
+  }
+
+  .detail-header__icon {
+    width: 96px;
+    height: 96px;
+  }
+
+  .screenshot-slide {
+    width: 180px;
+  }
+}
+
+/* ===== 600px ===== */
+@media (min-width: 600px) {
+  .games-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 180px;
+  }
+
+  .banner-slider {
+    height: 280px;
+    margin: var(--space-md) auto;
+    max-width: calc(100% - var(--space-xl));
+  }
+
+  .detail-meta {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ===== 768px (Tablet) ===== */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-xl);
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0;
+  }
+
+  .games-grid--horizontal {
+    padding: 0;
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 200px;
+  }
+
+  .section__header {
+    padding: 0;
+  }
+
+  .banner-slider {
+    height: 340px;
+    border-radius: var(--radius-xl);
+    max-width: 100%;
+  }
+
+  .banner-slide__icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .banner-slide__title {
+    font-size: 1.5rem;
+  }
+
+  .game-card__media {
+    aspect-ratio: 3 / 3.5;
+  }
+
+  .header__search {
+    max-width: 400px;
+  }
+
+  .detail-banner {
+    height: 360px;
+  }
+
+  .detail-header {
+    padding: 0 var(--space-xl);
+    margin-top: -80px;
+  }
+
+  .detail-header__icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 24px;
+  }
+
+  .detail-header__title {
+    font-size: 2rem;
+  }
+
+  .detail-meta {
+    max-width: 600px;
+    margin: var(--space-xl) auto;
+  }
+
+  .detail-actions {
+    max-width: 600px;
+    margin: 0 auto var(--space-xl);
+  }
+
+  .detail-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .screenshot-slide {
+    width: 220px;
+  }
+
+  .page {
+    padding-bottom: 0;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+
+  .header__inner {
+    padding: var(--space-sm) var(--space-xl);
+  }
+
+  .search-page__header {
+    padding: var(--space-md) var(--space-xl);
+  }
+
+  .search-results {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .no-results {
+    padding: var(--space-2xl);
+  }
+}
+
+/* ===== 1024px (Desktop) ===== */
+@media (min-width: 1024px) {
+  .games-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 220px;
+  }
+
+  .banner-slider {
+    height: 400px;
+  }
+
+  .game-card__media {
+    aspect-ratio: 3 / 3.5;
+  }
+
+  .header__search {
+    max-width: 480px;
+  }
+
+  .detail-banner {
+    height: 440px;
+  }
+
+  .screenshot-slide {
+    width: 260px;
+  }
+
+  .feature-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== 1200px ===== */
+@media (min-width: 1200px) {
+  .games-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .banner-slider {
+    height: 440px;
+  }
+}
+
+/* ===== 1440px (Large Desktop) ===== */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .games-grid--horizontal .game-card {
+    width: 240px;
+  }
+
+  .banner-slider {
+    height: 480px;
+  }
+
+  .detail-banner {
+    height: 500px;
+  }
+
+  .screenshot-slide {
+    width: 280px;
+  }
+}
+
+/* ===== Dark mode (always dark) ===== */
+@media (prefers-color-scheme: light) {
+  /* Force dark theme regardless of system preference */
+}
+
+/* ===== Hover capable devices ===== */
+@media (hover: hover) {
+  .game-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .game-card:active {
+    transform: scale(0.98);
+  }
+
+  .banner-slide:hover .banner-slide__image {
+    transform: scale(1.05);
+  }
+
+  .screenshot-slide:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* ===== Touch devices ===== */
+@media (hover: none) {
+  .game-card:hover {
+    transform: none;
+  }
+
+  .game-card:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ===== Landscape on mobile ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .bottom-nav {
+    display: none;
+  }
+
+  .page {
+    padding-bottom: 0;
+  }
+
+  .banner-slider {
+    height: 160px;
+  }
+
+  .detail-banner {
+    height: 180px;
+  }
+}

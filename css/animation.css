@@ -1,0 +1,411 @@
+/**
+ * GameHub - Animation Styles
+ * Animasi untuk halaman dan transisi.
+ */
+
+/* ===== Page Transitions ===== */
+.page-enter {
+  animation: pageEnter var(--transition-base) forwards;
+}
+
+.page-exit {
+  animation: pageExit var(--transition-base) forwards;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* ===== Card Entrance Animations ===== */
+.card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card-enter-active {
+  animation: cardEnter var(--transition-base) forwards;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered card entrance */
+.games-grid .game-card:nth-child(1) { animation-delay: 0ms; }
+.games-grid .game-card:nth-child(2) { animation-delay: 50ms; }
+.games-grid .game-card:nth-child(3) { animation-delay: 100ms; }
+.games-grid .game-card:nth-child(4) { animation-delay: 150ms; }
+.games-grid .game-card:nth-child(5) { animation-delay: 200ms; }
+.games-grid .game-card:nth-child(6) { animation-delay: 250ms; }
+.games-grid .game-card:nth-child(7) { animation-delay: 300ms; }
+.games-grid .game-card:nth-child(8) { animation-delay: 350ms; }
+.games-grid .game-card:nth-child(9) { animation-delay: 400ms; }
+.games-grid .game-card:nth-child(10) { animation-delay: 450ms; }
+.games-grid .game-card:nth-child(11) { animation-delay: 500ms; }
+.games-grid .game-card:nth-child(12) { animation-delay: 550ms; }
+
+/* ===== Button Animations ===== */
+.btn-press {
+  transition: transform 150ms ease;
+}
+
+.btn-press:active {
+  transform: scale(0.95);
+}
+
+/* ===== Icon Animations ===== */
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+.icon-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.icon-bounce {
+  animation: bounceIn 0.5s ease forwards;
+}
+
+/* ===== Scroll Reveal ===== */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Modal Animation ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.modal.active {
+  opacity: 1;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.modal__container {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  transform: scale(0.9) translateY(20px);
+  transition: transform var(--transition-base);
+}
+
+.modal.active .modal__container {
+  transform: scale(1) translateY(0);
+}
+
+.modal--small .modal__container {
+  max-width: 380px;
+}
+
+.modal--large .modal__container {
+  max-width: 700px;
+}
+
+.modal--fullscreen .modal__container {
+  max-width: 100%;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+.modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.modal__close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+}
+
+.modal__close:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.modal__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.modal__body {
+  padding: var(--space-lg);
+}
+
+.modal__message {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.modal__actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
+/* ===== Toast Animation ===== */
+.toast {
+  position: fixed;
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px;
+  max-width: 400px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all var(--transition-base);
+}
+
+.toast--show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast--hide {
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+/* Toast positions */
+.toast--top_left {
+  top: var(--space-lg);
+  left: var(--space-lg);
+}
+
+.toast--top_right {
+  top: var(--space-lg);
+  right: var(--space-lg);
+}
+
+.toast--bottom_left {
+  bottom: calc(80px + var(--space-lg));
+  left: var(--space-lg);
+}
+
+.toast--bottom_center {
+  bottom: calc(80px + var(--space-lg));
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+}
+
+.toast--bottom_center.toast--show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast--bottom_center.toast--hide {
+  transform: translateX(-50%) translateY(100px);
+}
+
+.toast--bottom_right {
+  bottom: calc(80px + var(--space-lg));
+  right: var(--space-lg);
+}
+
+/* Toast types */
+.toast--success {
+  border-left: 4px solid var(--success);
+}
+
+.toast--error {
+  border-left: 4px solid var(--danger);
+}
+
+.toast--warning {
+  border-left: 4px solid var(--warning);
+}
+
+.toast--info {
+  border-left: 4px solid var(--primary);
+}
+
+.toast__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toast--success .toast__icon {
+  color: var(--success);
+}
+
+.toast--error .toast__icon {
+  color: var(--danger);
+}
+
+.toast--warning .toast__icon {
+  color: var(--warning);
+}
+
+.toast--info .toast__icon {
+  color: var(--primary);
+}
+
+.toast__content {
+  flex: 1;
+}
+
+.toast__message {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.toast__close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toast__close:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.toast__close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ===== Hero Animation ===== */
+@keyframes heroGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #4F8CFF, #6B5CE7, #4F8CFF);
+  background-size: 200% 200%;
+  animation: heroGradient 6s ease infinite;
+}
+
+/* ===== Floating Animation ===== */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ===== Glow Animation ===== */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(79, 140, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(79, 140, 255, 0.6);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* ===== Skeleton Shimmer ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    #333 50%,
+    var(--bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
