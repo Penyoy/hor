@@ -192,6 +192,6 @@ export default function handler(req, res) {
 
   res.status(200).json({
     status: true,
-    data: banners
+    data: games
   });
     }
