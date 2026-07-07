@@ -1,5 +1,5 @@
 {
-    "games": {
+    "games": [
     {
       "id": "minecraft",
       "title": "Minecraft",
@@ -188,5 +188,5 @@
         }
       ]
     }
-}
+  ]
 }
