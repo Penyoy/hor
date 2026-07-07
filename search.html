@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D0D0D">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Cari game di GameHub. Temukan game favoritmu dengan pencarian cepat.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cari Game - GameHub">
+  <meta property="og:description" content="Cari game di GameHub.">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cari Game - GameHub">
+  <meta name="twitter:description" content="Cari game di GameHub.">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GameHub">
+
+  <title>Cari Game - GameHub</title>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/detail.css">
+  <link rel="stylesheet" href="css/search.css">
+  <link rel="stylesheet" href="css/animation.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+</head>
+<body>
+  <!-- Search Page -->
+  <main class="search-page page-enter" id="searchPage">
+    <!-- Search Header -->
+    <div class="search-page__header">
+      <div class="search-page__bar">
+        <a href="index.html" class="search-page__back" aria-label="Kembali">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <div class="search-page__input-wrapper">
+          <svg class="search-page__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input 
+            type="text" 
+            class="search-page__input" 
+            id="searchInput"
+            placeholder="Cari game..." 
+            autocomplete="off"
+            autofocus
+            aria-label="Cari game"
+          >
+          <button class="search-page__clear" id="searchClear" aria-label="Bersihkan pencarian">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Stats -->
+    <div class="search-stats" id="searchStats" style="display: none;"></div>
+
+    <!-- Recent Searches -->
+    <div class="recent-searches" id="recentSearches">
+      <div class="recent-searches__header">
+        <h3 class="recent-searches__title">Pencarian Terakhir</h3>
+        <button class="recent-searches__clear" id="clearRecent">Hapus Semua</button>
+      </div>
+      <div id="recentSearchesList"></div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="search-results" id="searchResults" style="display: none;">
+      <div class="games-grid" id="searchResultsGrid"></div>
+    </div>
+
+    <!-- No Results -->
+    <div class="no-results" id="noResults" style="display: none;">
+      <div class="no-results__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </div>
+      <h3 class="no-results__title">Game tidak ditemukan</h3>
+      <p class="no-results__message">
+        Tidak ada hasil untuk "<span class="no-results__query" id="noResultsQuery"></span>"
+      </p>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama">
+    <div class="bottom-nav__inner">
+      <a href="index.html" class="bottom-nav__item" data-page="home" aria-label="Beranda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Beranda</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="search.html?filter=trending" class="bottom-nav__item" data-page="trending" aria-label="Trending">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>Trending</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="search.html" class="bottom-nav__item active" data-page="search" aria-label="Cari">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>Cari</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="about.html" class="bottom-nav__item" data-page="about" aria-label="Tentang">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>Tentang</span>
+        <div class="ripple-container"></div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Scripts -->
+  <script type="module" src="js/search.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
