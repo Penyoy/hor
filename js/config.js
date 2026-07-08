@@ -6,7 +6,7 @@
 const CONFIG = {
   // API Endpoints - Ubah URL API di sini
   API: {
-    BASE_URL: '',
+    BASE_URL: 'https://wanz0.web.id',
     GAMES: '/api/games',
     GAME: '/api/game',
     TRENDING: '/api/games?trending=true',
