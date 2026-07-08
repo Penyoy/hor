@@ -1,0 +1,475 @@
+/**
+ * Vercel Serverless Function - /api/games
+ * Endpoint untuk mendapatkan list game dengan filter
+ */
+
+const GAMES_DATA = [
+  {
+    id: "minecraft",
+    title: "Minecraft",
+    banner: "https://image.api.playstation.com/vulcan/img/cfn/11307uYG0CXzRuA9ary0THIhwJ_kgZtZ2PWKV6N2qJFQD6xO7_qYp0P2wU5V9X0e.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png",
+    rating: 4.8,
+    size: "285 MB",
+    version: "1.21.1",
+    developer: "Mojang Studios",
+    category: "Sandbox",
+    downloads: "100M+",
+    updated: "2026-07-01",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: true,
+    hasUpdate: true
+  },
+  {
+    id: "genshin-impact",
+    title: "Genshin Impact",
+    banner: "https://upload.wikimedia.org/wikipedia/en/5/5d/Genshin_Impact.jpg",
+    icon: "https://upload.wikimedia.org/wikipedia/en/5/5d/Genshin_Impact.jpg",
+    rating: 4.6,
+    size: "32 GB",
+    version: "5.7.0",
+    developer: "HoYoverse",
+    category: "RPG",
+    downloads: "80M+",
+    updated: "2026-06-28",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: true,
+    hasUpdate: true
+  },
+  {
+    id: "mobile-legends",
+    title: "Mobile Legends: Bang Bang",
+    banner: "https://play-lh.googleusercontent.com/OU3J5wR2iMVqXJ_v0D9v8x0J4u9v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5w",
+    icon: "https://play-lh.googleusercontent.com/OU3J5wR2iMVqXJ_v0D9v8x0J4u9v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5w",
+    rating: 4.4,
+    size: "195 MB",
+    version: "1.9.5",
+    developer: "Moonton",
+    category: "MOBA",
+    downloads: "500M+",
+    updated: "2026-07-05",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "stardew-valley",
+    title: "Stardew Valley",
+    banner: "https://upload.wikimedia.org/wikipedia/en/4/46/Stardew_Valley_logo.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/4/46/Stardew_Valley_logo.png",
+    rating: 4.9,
+    size: "350 MB",
+    version: "1.6.9",
+    developer: "ConcernedApe",
+    category: "Simulation",
+    downloads: "20M+",
+    updated: "2026-06-20",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: true,
+    hasUpdate: false
+  },
+  {
+    id: "honkai-star-rail",
+    title: "Honkai: Star Rail",
+    banner: "https://upload.wikimedia.org/wikipedia/en/0/0e/Honkai_Star_Rail_cover.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/0/0e/Honkai_Star_Rail_cover.png",
+    rating: 4.7,
+    size: "18 GB",
+    version: "3.2.0",
+    developer: "HoYoverse",
+    category: "RPG",
+    downloads: "50M+",
+    updated: "2026-07-03",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: true,
+    hasUpdate: true
+  },
+  {
+    id: "clash-of-clans",
+    title: "Clash of Clans",
+    banner: "https://play-lh.googleusercontent.com/8cl7qwXqOaH0CqD3P9q8v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5w",
+    icon: "https://play-lh.googleusercontent.com/8cl7qwXqOaH0CqD3P9q8v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5w",
+    rating: 4.5,
+    size: "280 MB",
+    version: "16.5.2",
+    developer: "Supercell",
+    category: "Strategy",
+    downloads: "500M+",
+    updated: "2026-06-25",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "zenless-zone-zero",
+    title: "Zenless Zone Zero",
+    banner: "https://upload.wikimedia.org/wikipedia/en/3/3c/Zenless_Zone_Zero_cover.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/3/3c/Zenless_Zone_Zero_cover.png",
+    rating: 4.3,
+    size: "15 GB",
+    version: "1.8.0",
+    developer: "HoYoverse",
+    category: "Action",
+    downloads: "30M+",
+    updated: "2026-07-06",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "brawl-stars",
+    title: "Brawl Stars",
+    banner: "https://play-lh.googleusercontent.com/brawl_stars_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/brawl_stars_icon.jpg",
+    rating: 4.2,
+    size: "320 MB",
+    version: "58.279",
+    developer: "Supercell",
+    category: "Action",
+    downloads: "200M+",
+    updated: "2026-07-02",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "subway-surfers",
+    title: "Subway Surfers",
+    banner: "https://play-lh.googleusercontent.com/subway_surfers_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/subway_surfers_icon.jpg",
+    rating: 4.1,
+    size: "180 MB",
+    version: "3.36.0",
+    developer: "SYBO Games",
+    category: "Arcade",
+    downloads: "1B+",
+    updated: "2026-07-07",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "pokemon-go",
+    title: "Pokémon GO",
+    banner: "https://play-lh.googleusercontent.com/pokemon_go_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/pokemon_go_icon.jpg",
+    rating: 3.9,
+    size: "220 MB",
+    version: "0.345.0",
+    developer: "Niantic",
+    category: "AR",
+    downloads: "100M+",
+    updated: "2026-06-30",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "among-us",
+    title: "Among Us",
+    banner: "https://upload.wikimedia.org/wikipedia/en/9/9a/Among_Us_cover_art.jpg",
+    icon: "https://upload.wikimedia.org/wikipedia/en/9/9a/Among_Us_cover_art.jpg",
+    rating: 4.0,
+    size: "150 MB",
+    version: "2026.6.18",
+    developer: "Innersloth",
+    category: "Party",
+    downloads: "100M+",
+    updated: "2026-06-18",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: false
+  },
+  {
+    id: "roblox",
+    title: "Roblox",
+    banner: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Roblox_logo_2022.svg",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Roblox_logo_2022.svg",
+    rating: 4.3,
+    size: "180 MB",
+    version: "2.645.665",
+    developer: "Roblox Corporation",
+    category: "Platform",
+    downloads: "500M+",
+    updated: "2026-07-04",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "e-football-2026",
+    title: "eFootball 2026",
+    banner: "https://upload.wikimedia.org/wikipedia/en/8/8e/EFootball_2026_cover.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/8/8e/EFootball_2026_cover.png",
+    rating: 4.0,
+    size: "4.5 GB",
+    version: "4.0.0",
+    developer: "Konami",
+    category: "Sports",
+    downloads: "50M+",
+    updated: "2026-07-08",
+    isTrending: false,
+    isNew: true,
+    isEditorsChoice: true,
+    hasUpdate: true
+  },
+  {
+    id: "call-of-duty-mobile",
+    title: "Call of Duty: Mobile",
+    banner: "https://upload.wikimedia.org/wikipedia/en/5/5c/Call_of_Duty_Mobile.jpg",
+    icon: "https://upload.wikimedia.org/wikipedia/en/5/5c/Call_of_Duty_Mobile.jpg",
+    rating: 4.4,
+    size: "2.8 GB",
+    version: "1.0.48",
+    developer: "Activision",
+    category: "FPS",
+    downloads: "300M+",
+    updated: "2026-06-29",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: true,
+    hasUpdate: true
+  },
+  {
+    id: "asphalt-9",
+    title: "Asphalt 9: Legends",
+    banner: "https://upload.wikimedia.org/wikipedia/en/9/9f/Asphalt_9_cover.png",
+    icon: "https://upload.wikimedia.org/wikipedia/en/9/9f/Asphalt_9_cover.png",
+    rating: 4.3,
+    size: "3.2 GB",
+    version: "4.9.1b",
+    developer: "Gameloft",
+    category: "Racing",
+    downloads: "100M+",
+    updated: "2026-06-22",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: false
+  },
+  {
+    id: "plants-vs-zombies-3",
+    title: "Plants vs. Zombies 3",
+    banner: "https://play-lh.googleusercontent.com/pvz3_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/pvz3_icon.jpg",
+    rating: 3.8,
+    size: "450 MB",
+    version: "24.0.1",
+    developer: "EA Mobile",
+    category: "Tower Defense",
+    downloads: "10M+",
+    updated: "2026-07-01",
+    isTrending: false,
+    isNew: true,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "free-fire",
+    title: "Free Fire",
+    banner: "https://play-lh.googleusercontent.com/free_fire_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/free_fire_icon.jpg",
+    rating: 4.1,
+    size: "600 MB",
+    version: "1.108.1",
+    developer: "Garena",
+    category: "Battle Royale",
+    downloads: "1B+",
+    updated: "2026-07-05",
+    isTrending: true,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: true
+  },
+  {
+    id: "candy-crush-saga",
+    title: "Candy Crush Saga",
+    banner: "https://play-lh.googleusercontent.com/candy_crush_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/candy_crush_icon.jpg",
+    rating: 4.2,
+    size: "120 MB",
+    version: "1.288.1",
+    developer: "King",
+    category: "Puzzle",
+    downloads: "1B+",
+    updated: "2026-06-15",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: false
+  },
+  {
+    id: "hill-climb-racing-2",
+    title: "Hill Climb Racing 2",
+    banner: "https://play-lh.googleusercontent.com/hcr2_banner.jpg",
+    icon: "https://play-lh.googleusercontent.com/hcr2_icon.jpg",
+    rating: 4.3,
+    size: "200 MB",
+    version: "1.62.3",
+    developer: "Fingersoft",
+    category: "Racing",
+    downloads: "100M+",
+    updated: "2026-06-10",
+    isTrending: false,
+    isNew: false,
+    isEditorsChoice: false,
+    hasUpdate: false
+  }
+];
+
+const DETAIL_DATA = {
+  "minecraft": {
+    description: "Jelajahi dunia tak terbatas dan bangun apa pun dari rumah sederhana hingga istana megah. Bermainlah dalam mode Kreatif dengan sumber daya tak terbatas, atau gali hingga ke bumi dalam mode Bertahan Hidup, membuat senjata dan baju zirah untuk menangkis mob berbahaya.",
+    screenshots: [
+      "https://www.minecraft.net/content/dam/games/minecraft/screenshots/RayTracing_4K_Creative.png",
+      "https://www.minecraft.net/content/dam/games/minecraft/screenshots/RTX_PonPon_4K.png",
+      "https://www.minecraft.net/content/dam/games/minecraft/screenshots/RTX_Crystal_Palace_4K.png"
+    ],
+    download: "https://www.minecraft.net/id-id/download",
+    features: ["Offline Mode", "Multiplayer Online", "Cross-Platform", "Mod Support", "Realms Server", "Marketplace Konten"],
+    changelog: [
+      { version: "1.21.1", date: "2026-07-01", changes: ["Perbaikan bug pada sistem redstone", "Peningkatan performa rendering", "Penambahan blok baru: Pale Oak", "Perbaikan stabilitas multiplayer"] },
+      { version: "1.21.0", date: "2026-06-15", changes: ["Trial Chambers update", "Mace weapon baru", "Breeze dan Bogged mob", "Auto-crafting crafter"] }
+    ]
+  },
+  "genshin-impact": {
+    description: "Genshin Impact adalah game RPG aksi open-world yang membawamu ke Teyvat, sebuah benua yang penuh dengan kehidupan dan energi elemental. Kamu dan saudaramu datang ke sini dari dunia lain.",
+    screenshots: ["https://upload.wikimedia.org/wikipedia/en/5/5d/Genshin_Impact.jpg", "https://webstatic.hoyoverse.com/upload/content/2021/09/14/screenshot1.jpg", "https://webstatic.hoyoverse.com/upload/content/2021/09/14/screenshot2.jpg"],
+    download: "https://genshin.hoyoverse.com/en/",
+    features: ["Open World", "Elemental Combat System", "Co-op Multiplayer", "Cross-Platform", "Regular Events", "Gacha System"],
+    changelog: [{ version: "5.7.0", date: "2026-06-28", changes: ["Region baru: Natlan Part 2", "Karakter baru: 5-star Pyro", "Weapon baru dan artifact", "Event summer terbaru"] }]
+  },
+  "mobile-legends": {
+    description: "Mobile Legends: Bang Bang adalah game MOBA 5v5 terpopuler di dunia. Bertarung bersama temanmu, pilih hero favoritmu, dan bangun tim sempurna untuk menghancurkan base musuh dalam pertarungan 10 menit yang seru.",
+    screenshots: ["https://play-lh.googleusercontent.com/screenshot1.jpg", "https://play-lh.googleusercontent.com/screenshot2.jpg", "https://play-lh.googleusercontent.com/screenshot3.jpg"],
+    download: "https://m.mobilelegends.com/",
+    features: ["5v5 Real-time Battle", "100+ Heroes", "Ranked Mode", "Esports Tournament", "Voice Chat", "Custom Mode"],
+    changelog: [{ version: "1.9.5", date: "2026-07-05", changes: ["Hero baru: Aurora Revamp", "Balance patch 15 hero", "Season 35 dimulai", "Skin Collector baru"] }]
+  },
+  "stardew-valley": {
+    description: "Stardew Valley adalah game simulasi pertanian RPG yang membawamu meninggalkan kehidupan kota yang monoton dan memulai hidup baru di desa kecil Pelican Town.",
+    screenshots: ["https://stardewvalley.net/wp-content/uploads/2017/12/screenshot1.png", "https://stardewvalley.net/wp-content/uploads/2017/12/screenshot2.png", "https://stardewvalley.net/wp-content/uploads/2017/12/screenshot3.png"],
+    download: "https://www.stardewvalley.net/",
+    features: ["Offline Mode", "Co-op Multiplayer (4 pemain)", "Fishing & Mining", "Relationship System", "Mod Support", "Seasonal Events"],
+    changelog: [{ version: "1.6.9", date: "2026-06-20", changes: ["New late-game content", "Quality of life improvements", "Bug fixes pada festival", "Performance optimization"] }]
+  },
+  "honkai-star-rail": {
+    description: "Honkai: Star Rail adalah game RPG strategi ruang angkasa yang dikembangkan oleh HoYoverse. Naikilah Astral Express dan jelajahi galaksi yang penuh dengan keajaiban, mitos, dan bahaya.",
+    screenshots: ["https://hsr.hoyoverse.com/upload/content/2023/04/12/screenshot1.jpg", "https://hsr.hoyoverse.com/upload/content/2023/04/12/screenshot2.jpg", "https://hsr.hoyoverse.com/upload/content/2023/04/12/screenshot3.jpg"],
+    download: "https://hsr.hoyoverse.com/",
+    features: ["Turn-based Combat", "Gacha System", "Immersive Story", "Character Building", "Simulated Universe", "Regular Updates"],
+    changelog: [{ version: "3.2.0", date: "2026-07-03", changes: ["Penacony story conclusion", "Karakter baru: 5-star Limited", "Light Cone baru", "Event anniversary"] }]
+  },
+  "clash-of-clans": {
+    description: "Clash of Clans adalah game strategi epik di mana kamu membangun desa, melatih pasukan, dan bertarung melawan jutaan pemain online di seluruh dunia.",
+    screenshots: ["https://play-lh.googleusercontent.com/screenshot_coc1.jpg", "https://play-lh.googleusercontent.com/screenshot_coc2.jpg", "https://play-lh.googleusercontent.com/screenshot_coc3.jpg"],
+    download: "https://supercell.com/en/games/clashofclans/",
+    features: ["Build & Defend Village", "Clan Wars", "Clan Games", "Builder Base", "Hero Equipment", "Clan Capital"],
+    changelog: [{ version: "16.5.2", date: "2026-06-25", changes: ["Town Hall 17 sneak peek", "New defense levels", "Troop balance changes", "Quality of life updates"] }]
+  },
+  "zenless-zone-zero": {
+    description: "Zenless Zone Zero adalah game action RPG dari HoYoverse yang berlatar di kota futuristik New Eridu. Jadilah Proxy dan pimpin squad Hollow Raiders.",
+    screenshots: ["https://zzz.hoyoverse.com/upload/content/2024/07/01/screenshot1.jpg", "https://zzz.hoyoverse.com/upload/content/2024/07/01/screenshot2.jpg", "https://zzz.hoyoverse.com/upload/content/2024/07/01/screenshot3.jpg"],
+    download: "https://zzz.hoyoverse.com/",
+    features: ["Hack-and-Slash Combat", "Roguelike Elements", "Character Collection", "Urban Fantasy Setting", "Combo System", "Cross-Platform"],
+    changelog: [{ version: "1.8.0", date: "2026-07-06", changes: ["Agent baru: S-rank Limited", "Story chapter baru", "Hollow exploration update", "Bangboo baru"] }]
+  },
+  "brawl-stars": {
+    description: "Brawl Stars adalah game multiplayer 3v3 dan battle royale cepat dari Supercell. Mainkan berbagai mode game dengan Brawlers unik.",
+    screenshots: ["https://play-lh.googleusercontent.com/bs_screenshot1.jpg", "https://play-lh.googleusercontent.com/bs_screenshot2.jpg", "https://play-lh.googleusercontent.com/bs_screenshot3.jpg"],
+    download: "https://supercell.com/en/games/brawlstars/",
+    features: ["3v3 Team Battles", "Battle Royale", "Brawl Pass", "Club System", "Esports Ready", "Quick Matches"],
+    changelog: [{ version: "58.279", date: "2026-07-02", changes: ["Brawler baru: Mythic", "Hypercharge baru", "Map rotation update", "Balance changes"] }]
+  },
+  "subway-surfers": {
+    description: "Subway Surfers adalah game endless runner klasik. Bantu Jake, Tricky, dan Fresh melarikan diri dari Inspector yang galak dan anjingnya.",
+    screenshots: ["https://play-lh.googleusercontent.com/ss_screenshot1.jpg", "https://play-lh.googleusercontent.com/ss_screenshot2.jpg", "https://play-lh.googleusercontent.com/ss_screenshot3.jpg"],
+    download: "https://subwaysurfers.com/",
+    features: ["Endless Runner", "World Tour Locations", "Character Collection", "Hoverboard", "Daily Challenges", "Offline Play"],
+    changelog: [{ version: "3.36.0", date: "2026-07-07", changes: ["World Tour: Bali", "Surfer baru", "Board baru", "Season Hunt baru"] }]
+  },
+  "pokemon-go": {
+    description: "Pokémon GO adalah game augmented reality yang mengajakmu menjelajahi dunia nyata untuk menangkap Pokémon.",
+    screenshots: ["https://play-lh.googleusercontent.com/pogo_screenshot1.jpg", "https://play-lh.googleusercontent.com/pogo_screenshot2.jpg", "https://play-lh.googleusercontent.com/pogo_screenshot3.jpg"],
+    download: "https://pokemongolive.com/",
+    features: ["Augmented Reality", "Real-world Exploration", "Raid Battles", "Trading System", "Pokédex Collection", "Community Day"],
+    changelog: [{ version: "0.345.0", date: "2026-06-30", changes: ["GO Fest 2026 preparation", "New Mega Evolutions", "Route feature update", "Bug fixes"] }]
+  },
+  "among-us": {
+    description: "Among Us adalah game multipemain party yang berlatar di pesawat ruang angkasa. Bekerja sama untuk menyelesaikan tugas, tapi hati-hati — ada Impostor di antara kalian!",
+    screenshots: ["https://innersloth.com/screenshot1.jpg", "https://innersloth.com/screenshot2.jpg", "https://innersloth.com/screenshot3.jpg"],
+    download: "https://innersloth.com/gameAmongUs.php",
+    features: ["4-15 Players", "Local & Online", "Cross-Platform", "Customizable Roles", "Map Variations", "Free Chat"],
+    changelog: [{ version: "2026.6.18", date: "2026-06-18", changes: ["New map: Airship 2.0", "Role update", "Cosmetic baru", "Anti-cheat improvement"] }]
+  },
+  "roblox": {
+    description: "Roblox adalah platform game ultimate yang memungkinkanmu memainkan jutaan game yang dibuat oleh komunitas global.",
+    screenshots: ["https://www.roblox.com/screenshot1.jpg", "https://www.roblox.com/screenshot2.jpg", "https://www.roblox.com/screenshot3.jpg"],
+    download: "https://www.roblox.com/",
+    features: ["Millions of Games", "Avatar Customization", "Game Creation Tools", "Cross-Platform", "Social Features", "Virtual Economy"],
+    changelog: [{ version: "2.645.665", date: "2026-07-04", changes: ["Performance improvements", "Avatar editor update", "New animation system", "Bug fixes"] }]
+  },
+  "e-football-2026": {
+    description: "eFootball 2026 adalah game sepak bola generasi berikutnya dari Konami. Rasakan sepak bola yang lebih realistis dengan grafis mutakhir.",
+    screenshots: ["https://www.konami.com/efootball/screenshot1.jpg", "https://www.konami.com/efootball/screenshot2.jpg", "https://www.konami.com/efootball/screenshot3.jpg"],
+    download: "https://www.konami.com/efootball/",
+    features: ["Real-time Online PvP", "Master League", "Dream Team", "Licensed Stadiums", "Motion Matching", "Cross-Platform"],
+    changelog: [{ version: "4.0.0", date: "2026-07-08", changes: ["Season 2026/2027 update", "New player faces", "Gameplay overhaul", "Stadium baru"] }]
+  },
+  "call-of-duty-mobile": {
+    description: "Call of Duty: Mobile menghadirkan pengalaman FPS konsol ke perangkat mobile. Mainkan mode Battle Royale, Multiplayer klasik, dan Zombie.",
+    screenshots: ["https://www.callofduty.com/mobile/screenshot1.jpg", "https://www.callofduty.com/mobile/screenshot2.jpg", "https://www.callofduty.com/mobile/screenshot3.jpg"],
+    download: "https://www.callofduty.com/mobile",
+    features: ["Battle Royale", "Multiplayer 5v5", "Zombie Mode", "Battle Pass", "Ranked Matches", "Controller Support"],
+    changelog: [{ version: "1.0.48", date: "2026-06-29", changes: ["Season 12: Future Warfare", "Weapon baru", "Map baru", "Operator skill baru"] }]
+  },
+  "asphalt-9": {
+    description: "Asphalt 9: Legends adalah game balap arcade terbaik dengan koleksi mobil supercar dari Ferrari, Porsche, Lamborghini, dan lainnya.",
+    screenshots: ["https://www.gameloft.com/asphalt9/screenshot1.jpg", "https://www.gameloft.com/asphalt9/screenshot2.jpg", "https://www.gameloft.com/asphalt9/screenshot3.jpg"],
+    download: "https://www.gameloft.com/asphalt-9-legends/",
+    features: ["200+ Hypercars", "TouchDrive Controls", "Career Mode", "Multiplayer (8 players)", "Club Race", "Nitro Shockwave"],
+    changelog: [{ version: "4.9.1b", date: "2026-06-22", changes: ["Car baru: Bugatti Chiron SS", "Season baru", "Special Event", "UI improvements"] }]
+  },
+  "plants-vs-zombies-3": {
+    description: "Plants vs. Zombies 3 adalah sekuel terbaru dari franchise tower defense populer. Dr. Zomboss telah kembali dengan rencana jahat yang lebih besar!",
+    screenshots: ["https://play-lh.googleusercontent.com/pvz3_ss1.jpg", "https://play-lh.googleusercontent.com/pvz3_ss2.jpg", "https://play-lh.googleusercontent.com/pvz3_ss3.jpg"],
+    download: "https://www.ea.com/games/plants-vs-zombies",
+    features: ["Tower Defense", "New Plant Types", "Boss Battles", "Social Features", "Daily Challenges", "Offline Mode"],
+    changelog: [{ version: "24.0.1", date: "2026-07-01", changes: ["World baru: Space Station", "Plant baru", "Zombie baru", "Difficulty rebalance"] }]
+  },
+  "free-fire": {
+    description: "Free Fire adalah game battle royale mobile terpopuler di dunia. 50 pemain mendarat di pulau terpencil dan bertarung untuk menjadi yang terakhir bertahan hidup.",
+    screenshots: ["https://play-lh.googleusercontent.com/ff_ss1.jpg", "https://play-lh.googleusercontent.com/ff_ss2.jpg", "https://play-lh.googleusercontent.com/ff_ss3.jpg"],
+    download: "https://ff.garena.com/",
+    features: ["50 Players BR", "10-Minute Matches", "Character System", "Pet Companions", "Ranked Mode", "Clash Squad"],
+    changelog: [{ version: "1.108.1", date: "2026-07-05", changes: ["OB48 update", "Karakter baru", "Weapon balance", "Map update Bermuda"] }]
+  },
+  "candy-crush-saga": {
+    description: "Candy Crush Saga adalah game puzzle match-3 paling populer di dunia. Tukar dan cocokkan permen untuk melewati level yang menantang dan manis.",
+    screenshots: ["https://play-lh.googleusercontent.com/cc_ss1.jpg", "https://play-lh.googleusercontent.com/cc_ss2.jpg", "https://play-lh.googleusercontent.com/cc_ss3.jpg"],
+    download: "https://king.com/game/candycrush",
+    features: ["10000+ Levels", "Daily Rewards", "Events & Challenges", "Leaderboards", "Offline Play", "Sync Across Devices"],
+    changelog: [{ version: "1.288.1", date: "2026-06-15", changes: ["Level baru: 15000+", "Episode baru", "Bug fixes", "Performance improvements"] }]
+  },
+  "hill-climb-racing-2": {
+    description: "Hill Climb Racing 2 adalah game balap fisika yang adiktif. Naik berbagai kendaraan, upgrade mesin, dan taklukkan berbagai medan ekstrem.",
+    screenshots: ["https://play-lh.googleusercontent.com/hcr2_ss1.jpg", "https://play-lh.googleusercontent.com/hcr2_ss2.jpg", "https://play-lh.googleusercontent.com/hcr2_ss3.jpg"],
+    download: "https://www.fingersoft.com/games/hill-climb-racing-2/",
+    features: ["Physics-based Racing", "30+ Vehicles", "Customization", "Team Events", "Adventure Mode", "Weekly Challenges"],
+    changelog: [{ version: "1.62.3", date: "2026-06-10", changes: ["Vehicle baru: Amphibian", "Track baru", "Bug fixes", "UI improvements"] }]
+  }
+};
+
+module.exports = { GAMES_DATA, DETAIL_DATA };
