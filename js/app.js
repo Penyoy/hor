@@ -2,6 +2,9 @@
  * GameHub - Main Application Module
  * Entry point untuk aplikasi GameHub.
  */
+// TARUH INI PALING ATAS SEBELUM SEMUA IMPORT LAIN
+import { setupMockFetch } from './games.js';
+setupMockFetch(); // Intercept semua fetch ke /api/
 
 import { initHomePage } from './home.js';
 import { lazyLoadImages, animateOnScroll } from './utils.js';
