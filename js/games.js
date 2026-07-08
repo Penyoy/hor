@@ -17,8 +17,8 @@ const GAMES_DATA = [
   {
     id: "minecraft",
     title: "Minecraft",
-    banner: "https://image.api.playstation.com/vulcan/img/cfn/11307uYG0CXzRuA9ary0THIhwJ_kgZtZ2PWKV6N2qJFQD6xO7_qYp0P2wU5V9X0e.png",
-    icon: "https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png",
+    banner: "https://ibb.co.com/99r2dYKC",
+    icon: "https://ibb.co.com/99r2dYKC",
     description: "Jelajahi dunia tak terbatas dan bangun apa pun dari rumah sederhana hingga istana megah. Bermainlah dalam mode Kreatif dengan sumber daya tak terbatas, atau gali hingga ke bumi dalam mode Bertahan Hidup, membuat senjata dan baju zirah untuk menangkis mob berbahaya.",
     rating: 4.8,
     version: "1.21.1",
