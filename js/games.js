@@ -17,7 +17,7 @@ const GAMES_DATA = [
     banner: "https://cdn.phototourl.com/free/2026-07-13-3b29d532-c071-49f5-8649-e84f7459060e.jpg",
     icon: "https://cdn.phototourl.com/free/2026-07-13-3b29d532-c071-49f5-8649-e84f7459060e.jpg",
     description: "Tes image",
-    rating: 4.8,
+    rating: 5,
     version: "1.21.1",
     size: "285 MB",
     developer: "penyoy",
@@ -61,7 +61,7 @@ const GAMES_DATA = [
       }
     ],
     isTrending: true,
-    isNew: false,
+    isNew: true,
     isEditorsChoice: true,
     hasUpdate: true
   }
@@ -167,8 +167,9 @@ class MockApiService {
 
   async getFavorites() {
     await delay(200);
-    const favoriteIds = storage.getFavorites ? storage.getFavorites() : [];
-    if (favoriteIds.length === 0) return [];
+    const favorites = storage.getFavorites ? storage.getFavorites() : [];
+    if (favorites.length === 0) return [];
+    const favoriteIds = favorites.map(f => f.id);
     return this.data.filter(g => favoriteIds.includes(g.id)).map(toListItem);
   }
 

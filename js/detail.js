@@ -149,6 +149,16 @@ const renderActions = (game) => {
     downloadBtn.href = game.download;
     downloadBtn.target = '_blank';
     downloadBtn.rel = 'noopener noreferrer';
+    downloadBtn.addEventListener('click', () => {
+      storage.addDownload({
+        id: game.id,
+        title: game.title,
+        developer: game.developer,
+        size: game.size,
+        color: game.color,
+        icon: game.icon
+      });
+    });
   }
 
   // Setup share button
@@ -184,7 +194,15 @@ const renderActions = (game) => {
   // Setup favorite button
   const favoriteBtn = document.getElementById('favoriteBtn');
   favoriteBtn?.addEventListener('click', () => {
-    const isFav = storage.toggleFavorite(gameId);
+    const isFav = storage.toggleFavorite({
+      id: game.id,
+      title: game.title,
+      developer: game.developer,
+      category: game.category,
+      rating: game.rating,
+      color: game.color,
+      icon: game.icon
+    });
     updateFavoriteButton();
     if (isFav) {
       showSuccess('Ditambahkan ke favorit!');

@@ -66,14 +66,15 @@ class StorageManager {
   }
 
   /**
-   * Simpan favorite game
-   * @param {string} gameId 
+   * Simpan favorite game (objek game lengkap: id, title, category, rating, dll)
+   * @param {object} game
    */
-  addFavorite(gameId) {
+  addFavorite(game) {
     const favorites = this.get('favorites', []);
-    if (!favorites.includes(gameId)) {
-      favorites.push(gameId);
+    if (!favorites.some((g) => g.id === game.id)) {
+      favorites.push(game);
       this.set('favorites', favorites);
+      document.dispatchEvent(new CustomEvent('gamehub:favorites-changed'));
     }
   }
 
@@ -83,8 +84,9 @@ class StorageManager {
    */
   removeFavorite(gameId) {
     const favorites = this.get('favorites', []);
-    const filtered = favorites.filter((id) => id !== gameId);
+    const filtered = favorites.filter((g) => g.id !== gameId);
     this.set('favorites', filtered);
+    document.dispatchEvent(new CustomEvent('gamehub:favorites-changed'));
   }
 
   /**
@@ -94,29 +96,70 @@ class StorageManager {
    */
   isFavorite(gameId) {
     const favorites = this.get('favorites', []);
-    return favorites.includes(gameId);
+    return favorites.some((g) => g.id === gameId);
   }
 
   /**
    * Toggle favorite
-   * @param {string} gameId 
+   * @param {object} game - objek game lengkap (harus punya properti id)
    * @returns {boolean} Status favorit sekarang
    */
-  toggleFavorite(gameId) {
-    if (this.isFavorite(gameId)) {
-      this.removeFavorite(gameId);
+  toggleFavorite(game) {
+    if (this.isFavorite(game.id)) {
+      this.removeFavorite(game.id);
       return false;
     }
-    this.addFavorite(gameId);
+    this.addFavorite(game);
     return true;
   }
 
   /**
    * Get semua favorites
-   * @returns {string[]}
+   * @returns {object[]}
    */
   getFavorites() {
     return this.get('favorites', []);
+  }
+
+  /**
+   * Simpan riwayat download (objek game lengkap: id, title, size, dll)
+   * @param {object} game
+   */
+  addDownload(game) {
+    const downloads = this.get('downloads', []);
+    const filtered = downloads.filter((g) => g.id !== game.id);
+    filtered.unshift({ ...game, downloadedAt: Date.now() });
+    this.set('downloads', filtered);
+    document.dispatchEvent(new CustomEvent('gamehub:downloads-changed'));
+  }
+
+  /**
+   * Hapus dari riwayat download
+   * @param {string} gameId
+   */
+  removeDownload(gameId) {
+    const downloads = this.get('downloads', []);
+    const filtered = downloads.filter((g) => g.id !== gameId);
+    this.set('downloads', filtered);
+    document.dispatchEvent(new CustomEvent('gamehub:downloads-changed'));
+  }
+
+  /**
+   * Check apakah game sudah pernah diunduh
+   * @param {string} gameId
+   * @returns {boolean}
+   */
+  isDownloaded(gameId) {
+    const downloads = this.get('downloads', []);
+    return downloads.some((g) => g.id === gameId);
+  }
+
+  /**
+   * Get semua riwayat download
+   * @returns {object[]}
+   */
+  getDownloads() {
+    return this.get('downloads', []);
   }
 
   /**
@@ -187,4 +230,10 @@ class StorageManager {
 
 // Export singleton instance
 const storage = new StorageManager();
+
+// Expose sebagai global juga, karena beberapa halaman (favorites-page.js,
+// downloads-page.js, detail-actions.js) memuat storage.js sebagai dependency
+// dan memanggilnya lewat variabel global `GameHubStorage`, bukan lewat import.
+window.GameHubStorage = storage;
+
 export default storage;
