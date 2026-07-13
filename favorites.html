@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D0D0D">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Daftar game favorit di GameHub.">
+  <meta name="robots" content="noindex, follow">
+
+  <title>Favorit - GameHub H</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/animation.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/profile.css">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo" aria-label="GameHub Home">
+        <span class="header__logo-text">GameHub H+</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page page-enter list-page" id="favoritesPage">
+    <div class="list-page__header">
+      <h1 class="list-page__title">Favorit</h1>
+      <p class="list-page__subtitle" id="favoritesSubtitle">Memuat…</p>
+    </div>
+
+    <div class="list-page__body" id="favoritesList"></div>
+
+    <div class="empty-state" id="favoritesEmpty" style="display: none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <p class="empty-state__title">Belum ada favorit</p>
+      <p class="empty-state__message">Game yang kamu tandai favorit akan muncul di sini.</p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama">
+    <div class="bottom-nav__inner">
+      <a href="index.html" class="bottom-nav__item" data-page="home" aria-label="Beranda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Beranda</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="search.html" class="bottom-nav__item" data-page="search" aria-label="Cari">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>Cari</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="downloads.html" class="bottom-nav__item" data-page="downloads" aria-label="Unduhan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Favorit</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="favorites.html" class="bottom-nav__item active" data-page="favorites" aria-label="Favorit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Favorit</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="profile.html" class="bottom-nav__item" data-page="profile" aria-label="Profil">
+        <span data-nav-avatar class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span>Profil</span>
+        <div class="ripple-container"></div>
+      </a>
+    </div>
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/storage.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/context-menu.js"></script>
+  <script type="module" src="js/favorites-page.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

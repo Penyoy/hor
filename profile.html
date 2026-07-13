@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D0D0D">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Profil akun GameHub. Masuk untuk menyimpan favorit dan riwayat unduhan.">
+  <meta name="robots" content="noindex, follow">
+
+  <title>Profil - GameHub H</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/animation.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/profile.css">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo" aria-label="GameHub Home">
+        <span class="header__logo-text">GameHub H+</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page page-enter" id="profilePage">
+
+    <!-- Firebase not configured notice (hidden automatically once configured) -->
+    <div class="config-notice" id="configNotice" style="display: none;">
+      Firebase belum dikonfigurasi. Isi <code>js/firebase-config.js</code> dengan konfigurasi project Firebase-mu supaya login aktif.
+    </div>
+
+    <!-- ===== Guest state: login/register form ===== -->
+    <section id="guestSection">
+      <div class="profile-guest">
+        <div class="profile-guest__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h1 class="profile-guest__title">Masuk ke GameHub H+</h1>
+        <p class="profile-guest__message">Simpan game favorit dan lihat riwayat unduhanmu di semua perangkat.</p>
+      </div>
+
+      <div class="auth-form">
+        <div class="auth-form__error" id="authError"></div>
+
+        <div class="auth-tabs">
+          <button type="button" class="auth-tabs__btn active" data-tab="login">Masuk</button>
+          <button type="button" class="auth-tabs__btn" data-tab="register">Daftar</button>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-field">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" autocomplete="email" required placeholder="nama@email.com">
+          </div>
+          <div class="form-field">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn--primary btn--full auth-form__submit" id="loginSubmit">Masuk</button>
+        </form>
+
+        <form id="registerForm" style="display: none;">
+          <div class="form-field">
+            <label for="registerName">Nama</label>
+            <input type="text" id="registerName" autocomplete="name" required placeholder="Nama kamu">
+          </div>
+          <div class="form-field">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" autocomplete="email" required placeholder="nama@email.com">
+          </div>
+          <div class="form-field">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" autocomplete="new-password" required placeholder="Minimal 6 karakter">
+          </div>
+          <button type="submit" class="btn btn--primary btn--full auth-form__submit" id="registerSubmit">Buat Akun</button>
+        </form>
+
+        <div class="auth-divider">atau</div>
+
+        <button type="button" class="btn btn--google btn--full" id="googleLoginBtn">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Lanjutkan dengan Google
+        </button>
+
+        <p class="auth-form__note" id="authNote">Belum punya akun? <a href="#" id="switchToRegister">Daftar di sini</a></p>
+      </div>
+    </section>
+
+    <!-- ===== Logged-in state ===== -->
+    <section id="userSection" style="display: none;">
+      <div class="profile-card">
+        <div class="profile-card__avatar" id="profileAvatar"></div>
+        <div class="profile-card__info">
+          <div class="profile-card__name" id="profileName"></div>
+          <div class="profile-card__email" id="profileEmail"></div>
+        </div>
+      </div>
+
+      <div class="profile-stats">
+        <a href="downloads.html" class="profile-stats__item">
+          <div class="profile-stats__value" id="statDownloads">0</div>
+          <div class="profile-stats__label">Unduhan</div>
+        </a>
+        <a href="favorites.html" class="profile-stats__item">
+          <div class="profile-stats__value" id="statFavorites">0</div>
+          <div class="profile-stats__label">Favorit</div>
+        </a>
+      </div>
+
+      <nav class="profile-menu">
+        <a href="downloads.html" class="profile-menu__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Daftar Unduhan</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="favorites.html" class="profile-menu__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span>Game Favorit</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="about.html" class="profile-menu__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span>Tentang GameHub</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <button type="button" class="profile-menu__item profile-menu__item--danger" id="logoutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Keluar</span>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama">
+    <div class="bottom-nav__inner">
+      <a href="index.html" class="bottom-nav__item" data-page="home" aria-label="Beranda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Beranda</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="search.html" class="bottom-nav__item" data-page="search" aria-label="Cari">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>Cari</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="downloads.html" class="bottom-nav__item" data-page="downloads" aria-label="Unduhan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Unduhan</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="favorites.html" class="bottom-nav__item" data-page="favorites" aria-label="Favorit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Favorit</span>
+        <div class="ripple-container"></div>
+      </a>
+      <a href="profile.html" class="bottom-nav__item active" data-page="profile" aria-label="Profil">
+        <span data-nav-avatar class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span>Profil</span>
+        <div class="ripple-container"></div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+
+  <script type="module"src="js/firebase-config.js"></script>
+  <script type="module"src="js/storage.js"></script>
+  <script type="module"src="js/auth.js"></script>
+  <script type="module"src="js/profile-page.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
