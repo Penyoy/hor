@@ -64,6 +64,55 @@ const GAMES_DATA = [
     isNew: true,
     isEditorsChoice: true,
     hasUpdate: true
+  },
+  {
+    id: "tes foto",
+    title: "tes foto",
+    banner: "https://cdn.phototourl.com/free/2026-07-14-3cbf79f1-713f-48af-962f-5dd874cc1b62.webp",
+    icon: "https://cdn.phototourl.com/free/2026-07-14-3cbf79f1-713f-48af-962f-5dd874cc1b62.webp",
+    description: "Tes image",
+    rating: 5,
+    version: "1.21.1",
+    size: "285 MB",
+    developer: "penyoy",
+    category: "Sandbox",
+    downloads: "100M+",
+    updated: "2026-07-01",
+    screenshots: [
+      "https://cdn.phototourl.com/free/2026-07-14-3cbf79f1-713f-48af-962f-5dd874cc1b62.webp",
+      "https://cdn.phototourl.com/free/2026-07-14-3cbf79f1-713f-48af-962f-5dd874cc1b62.webp",
+      "https://cdn.phototourl.com/free/2026-07-14-3cbf79f1-713f-48af-962f-5dd874cc1b62.webp"
+    ],
+    download: "https://www.minecraft.net/id-id/download",
+    features: [
+      "sex"
+    ],
+    changelog: [
+      {
+        version: "1.1.0",
+        date: "2026-07-01",
+        changes: [
+          "Perbaikan bug pada sistem redstone",
+          "Peningkatan performa rendering",
+          "Penambahan blok baru: Pale Oak",
+          "Perbaikan stabilitas multiplayer"
+        ]
+      },
+      {
+        version: "1.21.0",
+        date: "2026-06-15",
+        changes: [
+          "Trial Chambers update",
+          "Mace weapon baru",
+          "Breeze dan Bogged mob",
+          "Auto-crafting crafter"
+        ]
+      }
+    ],
+    isTrending: false,
+    isNew: true,
+    isEditorsChoice: false,
+    hasUpdate: true
   }
 ];
 
