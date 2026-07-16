@@ -261,5 +261,5 @@ Kontribusi sangat diterima! Silakan buat issue atau pull request.
 
 ## Kontak
 
-- Email: hello@gamehub.app
-- GitHub: [@gamehub](https://github.com/gamehub)
+- Email: penyoy11@gmail.com
+- GitHub: [@penyoy](https://github.com/penyoy)
