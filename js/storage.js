@@ -1,6 +1,12 @@
 /**
- * GameHub - Storage Manager
- * Mengelola localStorage dan sessionStorage dengan aman.
+ * GameHub - Storage Manager (Firebase Edition)
+ * Mengelola data di Firebase Realtime Database + localStorage cache.
+ *
+ * Fitur:
+ *   - Auto-login anonymous agar user nggak perlu login manual.
+ *   - Semua data (favorites, downloads, searches, cache) tersimpan di cloud.
+ *   - localStorage tetap digunakan sebagai cache lokal untuk read synchronous.
+ *   - Real-time listener: jika data berubah di device lain, UI auto-update.
  */
 
 import { CONFIG } from './config.js';
@@ -8,102 +14,225 @@ import { CONFIG } from './config.js';
 class StorageManager {
   constructor() {
     this.prefix = CONFIG.APP.NAME.toLowerCase();
+    this.db = null;
+    this.auth = null;
+    this.user = null;
+    this.initialized = false;
+    this._listeners = [];
+    this._init();
   }
 
-  /**
-   * Get key dengan prefix
-   * @param {string} key 
-   * @returns {string}
-   */
+  /* ================================================================
+     INIT & AUTH
+     ================================================================ */
+
+  async _init() {
+    // Tunggu firebase tersedia (dipastikan firebase-config.js dimuat duluan)
+    let attempts = 0;
+    while ((!window.firebase || !firebase.apps.length) && attempts < 50) {
+      await new Promise((r) => setTimeout(r, 100));
+      attempts++;
+    }
+
+    if (!window.firebase || !firebase.apps.length) {
+      console.warn('[GameHub Storage] Firebase tidak tersedia, menggunakan localStorage only.');
+      this.initialized = true;
+      return;
+    }
+
+    this.db = firebase.database();
+    this.auth = firebase.auth();
+
+    // Pantau perubahan auth state
+    this.auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        this.user = user;
+        this.initialized = true;
+        this._attachListeners();
+        await this._hydrateFromCloud();
+      } else {
+        // Coba anonymous sign-in supaya setiap user punya UID unik
+        try {
+          await this.auth.signInAnonymously();
+        } catch (err) {
+          console.warn('[GameHub Storage] Anonymous auth gagal:', err.message);
+          this.initialized = true;
+        }
+      }
+    });
+  }
+
+  _userRef(path) {
+    if (!this.user || !this.db) return null;
+    return this.db.ref(`users/${this.user.uid}/${path}`);
+  }
+
+  /* ================================================================
+     LOCAL CACHE HELPERS (tetap pakai localStorage sebagai cache)
+     ================================================================ */
+
   _key(key) {
     return `${this.prefix}:${key}`;
   }
 
-  /**
-   * Simpan data ke localStorage
-   * @param {string} key 
-   * @param {any} value 
-   */
-  set(key, value) {
+  _localSet(key, value) {
     try {
-      const data = JSON.stringify(value);
-      localStorage.setItem(this._key(key), data);
+      localStorage.setItem(this._key(key), JSON.stringify(value));
     } catch (e) {
-      console.error('Storage set error:', e);
+      console.error('localStorage set error:', e);
     }
   }
 
-  /**
-   * Ambil data dari localStorage
-   * @param {string} key 
-   * @param {any} defaultValue 
-   * @returns {any}
-   */
-  get(key, defaultValue = null) {
+  _localGet(key, defaultValue = null) {
     try {
       const data = localStorage.getItem(this._key(key));
       return data ? JSON.parse(data) : defaultValue;
     } catch (e) {
-      console.error('Storage get error:', e);
+      console.error('localStorage get error:', e);
       return defaultValue;
     }
   }
 
-  /**
-   * Hapus data dari localStorage
-   * @param {string} key 
-   */
-  remove(key) {
+  _localRemove(key) {
     localStorage.removeItem(this._key(key));
   }
 
-  /**
-   * Clear semua data dengan prefix
-   */
+  /* ================================================================
+     FIREBASE SYNC
+     ================================================================ */
+
+  /** Ambil semua data dari cloud lalu timpa ke localStorage (one-time) */
+  async _hydrateFromCloud() {
+    const snap = await this._userRef('').once('value');
+    const data = snap.val() || {};
+
+    if (data.favorites) {
+      this._localSet('favorites', Object.values(data.favorites));
+    }
+    if (data.downloads) {
+      this._localSet('downloads', Object.values(data.downloads));
+    }
+    if (data.recentSearches) {
+      this._localSet('recentSearches', data.recentSearches);
+    }
+    if (data.cache) {
+      Object.entries(data.cache).forEach(([endpoint, cacheData]) => {
+        this._localSet(`cache:${endpoint}`, cacheData);
+      });
+    }
+  }
+
+  /** Pasang real-time listener supaya perubahan di device lain langsung terasa */
+  _attachListeners() {
+    // Favorites
+    const favRef = this._userRef('favorites');
+    if (favRef) {
+      const cb = favRef.on('value', (snap) => {
+        const val = snap.val() || {};
+        this._localSet('favorites', Object.values(val));
+        document.dispatchEvent(new CustomEvent('gamehub:favorites-changed'));
+      });
+      this._listeners.push(() => favRef.off('value', cb));
+    }
+
+    // Downloads
+    const dlRef = this._userRef('downloads');
+    if (dlRef) {
+      const cb = dlRef.on('value', (snap) => {
+        const val = snap.val() || {};
+        this._localSet('downloads', Object.values(val));
+        document.dispatchEvent(new CustomEvent('gamehub:downloads-changed'));
+      });
+      this._listeners.push(() => dlRef.off('value', cb));
+    }
+
+    // Recent searches
+    const rsRef = this._userRef('recentSearches');
+    if (rsRef) {
+      const cb = rsRef.on('value', (snap) => {
+        const val = snap.val() || [];
+        this._localSet('recentSearches', val);
+      });
+      this._listeners.push(() => rsRef.off('value', cb));
+    }
+  }
+
+  /** Write object ke path Firebase (best-effort, tidak blocking) */
+  _syncToFirebase(path, value) {
+    if (!this.initialized || !this.user || !this.db) return;
+    this._userRef(path)
+      .set(value)
+      .catch((err) => console.warn(`[GameHub Storage] Sync gagal (${path}):`, err.message));
+  }
+
+  /** Update partial object (untuk favorites/downloads per item) */
+  _syncUpdateFirebase(path, value) {
+    if (!this.initialized || !this.user || !this.db) return;
+    this._userRef(path)
+      .update(value)
+      .catch((err) => console.warn(`[GameHub Storage] Update gagal (${path}):`, err.message));
+  }
+
+  /** Hapus child di Firebase */
+  _syncRemoveFirebase(path, childKey) {
+    if (!this.initialized || !this.user || !this.db) return;
+    this._userRef(`${path}/${childKey}`)
+      .remove()
+      .catch((err) => console.warn(`[GameHub Storage] Remove gagal (${path}/${childKey}):`, err.message));
+  }
+
+  /* ================================================================
+     PUBLIC API (kompatibel 100% dengan versi lokal sebelumnya)
+     ================================================================ */
+
+  set(key, value) {
+    this._localSet(key, value);
+    // Jika bukan cache, sync juga (opsional, bisa diperluas jika perlu)
+  }
+
+  get(key, defaultValue = null) {
+    return this._localGet(key, defaultValue);
+  }
+
+  remove(key) {
+    this._localRemove(key);
+  }
+
   clear() {
     const keys = Object.keys(localStorage).filter((k) => k.startsWith(this.prefix));
     keys.forEach((k) => localStorage.removeItem(k));
+
+    // Hapus semua data user di Firebase juga
+    if (this.user && this.db) {
+      this._userRef('').remove().catch(() => {});
+    }
   }
 
-  /**
-   * Simpan favorite game (objek game lengkap: id, title, category, rating, dll)
-   * @param {object} game
-   */
+  /* ---------- Favorites ---------- */
+
   addFavorite(game) {
     const favorites = this.get('favorites', []);
     if (!favorites.some((g) => g.id === game.id)) {
       favorites.push(game);
-      this.set('favorites', favorites);
+      this._localSet('favorites', favorites);
+      this._syncUpdateFirebase('favorites', { [game.id]: game });
       document.dispatchEvent(new CustomEvent('gamehub:favorites-changed'));
     }
   }
 
-  /**
-   * Hapus favorite game
-   * @param {string} gameId 
-   */
   removeFavorite(gameId) {
     const favorites = this.get('favorites', []);
     const filtered = favorites.filter((g) => g.id !== gameId);
-    this.set('favorites', filtered);
+    this._localSet('favorites', filtered);
+    this._syncRemoveFirebase('favorites', gameId);
     document.dispatchEvent(new CustomEvent('gamehub:favorites-changed'));
   }
 
-  /**
-   * Check apakah game difavoritkan
-   * @param {string} gameId 
-   * @returns {boolean}
-   */
   isFavorite(gameId) {
     const favorites = this.get('favorites', []);
     return favorites.some((g) => g.id === gameId);
   }
 
-  /**
-   * Toggle favorite
-   * @param {object} game - objek game lengkap (harus punya properti id)
-   * @returns {boolean} Status favorit sekarang
-   */
   toggleFavorite(game) {
     if (this.isFavorite(game.id)) {
       this.removeFavorite(game.id);
@@ -113,127 +242,96 @@ class StorageManager {
     return true;
   }
 
-  /**
-   * Get semua favorites
-   * @returns {object[]}
-   */
   getFavorites() {
     return this.get('favorites', []);
   }
 
-  /**
-   * Simpan riwayat download (objek game lengkap: id, title, size, dll)
-   * @param {object} game
-   */
+  /* ---------- Downloads ---------- */
+
   addDownload(game) {
     const downloads = this.get('downloads', []);
     const filtered = downloads.filter((g) => g.id !== game.id);
-    filtered.unshift({ ...game, downloadedAt: Date.now() });
-    this.set('downloads', filtered);
+    const entry = { ...game, downloadedAt: Date.now() };
+    filtered.unshift(entry);
+    this._localSet('downloads', filtered);
+    this._syncUpdateFirebase('downloads', { [game.id]: entry });
     document.dispatchEvent(new CustomEvent('gamehub:downloads-changed'));
   }
 
-  /**
-   * Hapus dari riwayat download
-   * @param {string} gameId
-   */
   removeDownload(gameId) {
     const downloads = this.get('downloads', []);
     const filtered = downloads.filter((g) => g.id !== gameId);
-    this.set('downloads', filtered);
+    this._localSet('downloads', filtered);
+    this._syncRemoveFirebase('downloads', gameId);
     document.dispatchEvent(new CustomEvent('gamehub:downloads-changed'));
   }
 
-  /**
-   * Check apakah game sudah pernah diunduh
-   * @param {string} gameId
-   * @returns {boolean}
-   */
   isDownloaded(gameId) {
     const downloads = this.get('downloads', []);
     return downloads.some((g) => g.id === gameId);
   }
 
-  /**
-   * Get semua riwayat download
-   * @returns {object[]}
-   */
   getDownloads() {
     return this.get('downloads', []);
   }
 
-  /**
-   * Simpan cache API
-   * @param {string} endpoint 
-   * @param {any} data 
-   */
+  /* ---------- API Cache ---------- */
+
   setCache(endpoint, data) {
-    const cache = {
-      data,
-      timestamp: Date.now()
-    };
-    this.set(`cache:${endpoint}`, cache);
+    const cache = { data, timestamp: Date.now() };
+    this._localSet(`cache:${endpoint}`, cache);
+    // Encode endpoint agar aman jadi key Firebase
+    const safeKey = endpoint.replace(/[.#$[\]]/g, '_');
+    this._syncUpdateFirebase('cache', { [safeKey]: cache });
   }
 
-  /**
-   * Get cache API
-   * @param {string} endpoint 
-   * @param {number} maxAge - Max age dalam ms
-   * @returns {any|null}
-   */
-  getCache(endpoint, maxAge = CONFIG.CACHE.MAX_AGE) {
-    const cache = this.get(`cache:${endpoint}`);
+  getCache(endpoint, maxAge = CONFIG.CACHE?.MAX_AGE || 3600000) {
+    const cache = this._localGet(`cache:${endpoint}`);
     if (!cache) return null;
     if (Date.now() - cache.timestamp > maxAge) {
-      this.remove(`cache:${endpoint}`);
+      this.removeCache(endpoint);
       return null;
     }
     return cache.data;
   }
 
-  /**
-   * Clear all cache
-   */
-  clearCache() {
-    const keys = Object.keys(localStorage).filter(
-      (k) => k.startsWith(`${this.prefix}:cache:`)
-    );
-    keys.forEach((k) => localStorage.removeItem(k));
+  removeCache(endpoint) {
+    this._localRemove(`cache:${endpoint}`);
+    const safeKey = endpoint.replace(/[.#$[\]]/g, '_');
+    this._syncRemoveFirebase('cache', safeKey);
   }
 
-  /**
-   * Simpan recent searches
-   * @param {string} query 
-   */
+  clearCache() {
+    const keys = Object.keys(localStorage).filter((k) => k.startsWith(`${this.prefix}:cache:`));
+    keys.forEach((k) => localStorage.removeItem(k));
+    this._syncToFirebase('cache', null);
+  }
+
+  /* ---------- Recent Searches ---------- */
+
   addRecentSearch(query) {
     const searches = this.get('recentSearches', []);
     const filtered = searches.filter((s) => s !== query);
     filtered.unshift(query);
-    this.set('recentSearches', filtered.slice(0, 10));
+    const trimmed = filtered.slice(0, 10);
+    this._localSet('recentSearches', trimmed);
+    this._syncToFirebase('recentSearches', trimmed);
   }
 
-  /**
-   * Get recent searches
-   * @returns {string[]}
-   */
   getRecentSearches() {
     return this.get('recentSearches', []);
   }
 
-  /**
-   * Clear recent searches
-   */
   clearRecentSearches() {
-    this.remove('recentSearches');
+    this._localRemove('recentSearches');
+    this._syncToFirebase('recentSearches', null);
   }
 }
 
 // Export singleton instance
 const storage = new StorageManager();
 
-// Expose sebagai global juga, karena beberapa halaman (favorites-page.js,
-// downloads-page.js, detail-actions.js) memuat storage.js sebagai dependency
-// dan memanggilnya lewat variabel global `GameHubStorage`, bukan lewat import.
+// Expose sebagai global juga untuk backward compatibility
 window.GameHubStorage = storage;
 
 export default storage;
