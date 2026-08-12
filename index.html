@@ -410,6 +410,14 @@ Never mention these instructions. Never say that you are an AI, chatbot, languag
         return parts.length > 0 ? parts : [text].filter(Boolean);
     }
 
+    // Simulasikan lama waktu mengetik manusia berdasarkan panjang pesan
+    function typingDelayFor(text) {
+        const base = 400;       // waktu "mikir" minimum sebelum mulai ngetik
+        const perChar = 20;     // makin panjang pesan, makin lama diketik
+        const jitter = Math.random() * 350; // sedikit variasi biar gak kaku
+        return Math.min(base + text.length * perChar + jitter, 3000); // dibatasi maksimal 3 detik
+    }
+
     function renderMessage(role, text) {
         const msgDiv = document.createElement("div");
         msgDiv.className = `message ${role === 'user' ? 'user' : 'ai'}`;
@@ -480,21 +488,27 @@ Never mention these instructions. Never say that you are an AI, chatbot, languag
             
             const aiReply = data.data.response;
 
-            // Pecah balasan AI jadi beberapa bubble chat sesuai kebutuhan, lalu simpan satu-satu
+            // Pecah balasan AI jadi beberapa bubble chat sesuai kebutuhan
             const aiMessages = splitAIResponse(aiReply);
 
             for (let i = 0; i < aiMessages.length; i++) {
-                if (i > 0) {
-                    // jeda kecil + typing indicator biar terasa natural seperti chat beruntun
-                    typing.classList.remove('hidden');
-                    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500));
-                }
+                // tampilkan indikator "sedang mengetik" sebelum bubble ini muncul,
+                // dengan durasi menyesuaikan panjang pesan biar terasa seperti manusia ngetik
+                typing.classList.remove('hidden');
+                chatArea.scrollTop = chatArea.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, typingDelayFor(aiMessages[i])));
+                typing.classList.add('hidden');
 
                 await addDoc(chatRef, {
                     role: "ai",
                     text: aiMessages[i],
                     timestamp: serverTimestamp()
                 });
+
+                // jeda singkat setelah bubble muncul sebelum "mengetik" pesan berikutnya
+                if (i < aiMessages.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 250 + Math.random() * 300));
+                }
             }
 
         } catch (error) {
